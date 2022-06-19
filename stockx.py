@@ -32,6 +32,29 @@ def searchInput(query):
     output = json.loads(html.text)
     return output
 
+def searchShoe(objectID): 
+    url = f'https://stockx.com/api/products/{objectID}/activity?limit=1000&page=1&sort=createdAt&order=DESC&state=480&currency=USD&country=US'
+
+    headers = {
+        'accept': 'application/json',
+        'accept-encoding': 'utf-8',
+        'accept-language': 'en-US,en;q=0.9',
+        'app-platform': 'Iron',
+        'referer': 'https://stockx.com/en-US',
+        'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="100", "Google Chrome";v="100"',
+        'sec-ch-ua-mobile': '?1',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'empty',
+        'sec-fetch-mode': 'cors',
+        'sec-fetch-site': 'same-origin',
+        'user-agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Mobile Safari/537.36',
+        'x-requested-with': 'XMLHttpRequest'
+    }
+
+    html = requests.get(url=url, headers=headers)
+    output = json.loads(html.text)
+    return output
+
 
 class shoe():
     #self operates the same way as "this" it's not an actual 
@@ -65,15 +88,13 @@ class shoe():
 
     def getProductCategory(self):
         return self.productCategory
-    
     # Sizes: size, skuUID, priceHistory[[]]
     #[ [size, skuUID, priceHistory[[]]], [size, skuUID, priceHistory[[]]], [size, skuUID, priceHistory[[]]] ]
     class Sizes:
         def __init__(self, size, skuUID):
             self.size = size
             self.skuUID = skuUID
-        
-        def createSize():
+
             
 
 
