@@ -1,5 +1,6 @@
 import requests
 import json
+import numpy as np
 
 shoes_array = [ 
 ]
@@ -31,44 +32,82 @@ def searchInput(query):
     output = json.loads(html.text)
     return output
 
-def createObjectID(query, index):
-    output = searchInput(query);
-    #objectID refers to ID when searching for exact shoe
-    #
-    return output['Products'][index]['objectID'] 
-
-    #return output['Products'][0]['title']
-
-def createTitle(query, index):
-    output = searchInput(query);
-    #objectID refers to ID when searching for exact shoe
-    #
-    return output['Products'][index]['title'] 
-
-def createProductCategory(query, index):
-    output = searchInput(query);
-    #objectID refers to ID when searching for exact shoe
-    #
-    return output['Products'][index]['productCategory'] 
-
 
 class shoe():
-    #self operates the same way as "this" it's not an actual parameter
-    def __init__(self, objectID, title, productCategory, skUuid):
+    #self operates the same way as "this" it's not an actual 
+    #each of these are methods which must be called on the respective shoe class
+    def __init__(self, objectID, title, productCategory, skUuid_array):
         self.objectID = objectID
         self.title = title
         self.productCategory = productCategory
-        self.skuUuid = skUuid
+        self.skUuid_array = skUuid_array
+    
+    def createObjectID(query, index):
+        output = searchInput(query);
+        #objectID refers to ID when searching for exact shoe
+        return output['Products'][index]['objectID'] 
 
-def createSkUuid(value):
-    return value;
-    '''skUuID_array = []
+    def getObjectID(self):
+        return self.objectID
+
+    def createTitle(query, index):
+        output = searchInput(query);
+        #objectID refers to ID when searching for exact shoe
+        return output['Products'][index]['title'] 
+
+    def getTitle(self):
+        return self.title
+
+    def createProductCategory(query, index):
+        output = searchInput(query);
+        #objectID refers to ID when searching for exact shoe
+        return output['Products'][index]['productCategory'] 
+
+    def getProductCategory(self):
+        return self.productCategory
+    
+    # Sizes: size, skuUID, priceHistory[[]]
+    #[ [size, skuUID, priceHistory[[]]], [size, skuUID, priceHistory[[]]], [size, skuUID, priceHistory[[]]] ]
+    class Sizes:
+        def __init__(self, size, skuUID):
+            self.size = size
+            self.skuUID = skuUID
+        
+        def createSize():
+            
+
+
+    def createSkUuid_array(self, value):
+        skUuid_array = []
+        shoeData = searchShoe(self.getObjectID())
+        for i in shoeData.length():           
+            skuUuid = shoeData[i]['skuUid']
+            for item in skUuid_array.length():
+                if (skUuid != )
+        return value
+'''
+def createSkUuid_array(query, index):
+    skUuid_array = []
+    #find the objectID
+    output = searchInput(query);
+    #objectID refers to ID when searching for exact shoe
+    objectIDInstance = output['Products'][index]['objectID'] 
+
+    skUuID_array = []
     output = searchInput(query);
     #objectID refers to ID when searching for exact shoe
     skUuid = output['Products'][index]['productCategory'] '''
     
 #shoes_array.append(shoe(search('Epic React')))
 
-print(createObjectID('Epic React', 0), createTitle('Epic React', 0), createProductCategory('Epic React', 0), createSkUuid(9));
-shoes_array.append(shoe(createObjectID('Epic React', 0), createTitle('Epic React', 0), createProductCategory('Epic React', 0), createSkUuid(9)))
+print(shoe.createObjectID('Epic React', 0), shoe.createTitle('Epic React', 0), shoe.createProductCategory('Epic React', 0), createSkUuid_array(9));
+shoe1 = shoe(shoe.createObjectID('Epic React', 0), shoe.createTitle('Epic React', 0), shoe.createProductCategory('Epic React', 0), createSkUuid_array(9))
+shoes_array.append(shoe1)
 print(shoes_array)
+print(shoe1.getObjectID())
+print(searchShoe('db1928e3-2b2e-4c69-8024-83cd87bdce09'))
+'''tasks: 
+1. Create a for loop that appends all SkUuid's to the shoe (refer to google doc on what to append)
+2. Create another loop that stores the priceHistory array (Date, Price) in the skUuid object
+3. Create a for loop to append all the shoes to the shoe_array
+4. Now you can do the fun stuff'''
