@@ -34,15 +34,14 @@ def searchInput(query):
     return output
 
 
-class shoe():
+class Shoe():
     #self operates the same way as "this" it's not an actual 
-    #each of these are methods which must be called on the respective shoe class
-    def __init__(self, objectID, title, productCategory, gender, skUuid_array):
+    #each of these are methods which must be called on the respective Shoe class
+    def __init__(self, objectID, title, productCategory, gender):
         self.objectID = objectID
         self.title = title
         self.productCategory = productCategory
         self.gender = gender
-        self.skUuid_array = skUuid_array
     
     def createObjectID(query, index):
         output = searchInput(query);
@@ -86,29 +85,6 @@ class shoe():
     # Sizes: size, skuUID, priceHistory[[]]
     #[ [size, skuUID, priceHistory[[]]], [size, skuUID, priceHistory[[]]], [size, skuUID, priceHistory[[]]] ]
 
-    def createSkUuid_array(self, index):
-        print(self)
-        size_array = []
-        class Size():
-            def __init__(self, size, skuUID, priceHistory):
-                self.size = size
-                self.skuUID = skuUID
-                self.priceHistory = priceHistory
-            
-            def createSize(self,index):
-                shoeData = self.searchShoe()
-                return shoeData['productActivity'][index]['shoeSize']
-
-            def createSkuUID(self, index):
-                shoeData = self.searchShoe()
-                return shoeData['productActivity'][index]['skuUuid']
-
-            def createPriceHistory(value):
-                return value
-        newSize = Size(Size.createSize(self, index), Size.createSkuUID(self, index), Size.createPriceHistory(9))
-        size_array.append(newSize)
-        return size_array
-
     def searchShoe(self): 
         url = f'https://stockx.com/api/products/{self.objectID}/activity?limit=1000&page=1&sort=createdAt&order=DESC&state=480&currency=USD&country=US'
 
@@ -132,22 +108,48 @@ class shoe():
         output = json.loads(html.text)
         return output
 
+class ShoeSize(Shoe):
+    def __init__(self, size, skuUID, priceHistory)
+    def createSkUuid_array(self, index):
+        print(self)
+        size_array = []
+        #takes sizes out of her eand ahve it extend the shoe class, then reference the shoe object
+        class Size():
+            def __init__(self, size, skuUID, priceHistory):
+                self.size = size
+                self.skuUID = skuUID
+                self.priceHistory = priceHistory
+            
+            def createSize(self,index):
+                shoeData = self.searchShoe()
+                return shoeData['productActivity'][index]['shoeSize']
+
+            def createSkuUID(self, index):
+                shoeData = self.searchShoe()
+                return shoeData['productActivity'][index]['skuUuid']
+
+            def createPriceHistory(value):
+                return value
+        newSize = Size(Size.createSize(self, index), Size.createSkuUID(self, index), Size.createPriceHistory(9))
+        size_array.append(newSize)
+        return size_array
     
 
 
 
     
-#shoes_array.append(shoe(search('Epic React')))
+#Shoes_array.append(Shoe(search('Epic React')))
 
-#print(shoe.createObjectID('Epic React', 0), shoe.createTitle('Epic React', 0), shoe.createProductCategory('Epic React', 0), shoe.createGender('Epic React', 0), shoe.createSkUuid_array(9));
-shoe1 = shoe(shoe.createObjectID('Epic React', 0), shoe.createTitle('Epic React', 0), shoe.createProductCategory('Epic React', 0), shoe.createGender('Epic React', 0), shoe.createSkUuid_array(0));
+#print(Shoe.createObjectID('Epic React', 0), Shoe.createTitle('Epic React', 0), Shoe.createProductCategory('Epic React', 0), Shoe.createGender('Epic React', 0), Shoe.createSkUuid_array(9));
+shoe1 = Shoe(Shoe.createObjectID('Epic React', 0), Shoe.createTitle('Epic React', 0), Shoe.createProductCategory('Epic React', 0), Shoe.createGender('Epic React', 0));
 shoes_array.append(shoe1)
 print(shoe1.getGender())
 #print(shoes_array)
 #print(shoe1.getObjectID())
-#print(shoe1.searchShoe)
-'''tasks: 
+print(shoe1.searchShoe())
+'''
 1. Create a for loop that appends all SkUuid's to the shoe (refer to google doc on what to append)
 2. Create another loop that stores the priceHistory array (Date, Price) in the skUuid object
 3. Create a for loop to append all the shoes to the shoe_array
-4. Now you can do the fun stuff'''
+4. Now you can do the fun stuff
+'''
