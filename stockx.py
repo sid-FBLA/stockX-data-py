@@ -1,3 +1,4 @@
+from tokenize import String
 from matplotlib.pyplot import title
 import requests
 import json
@@ -108,6 +109,133 @@ class Shoe():
         output = json.loads(html.text)
         return output
 
+    #second level functions -- require us to traverse a new array, the new array is the array above
+    def createSizeData(self):
+        output = self.searchShoe()
+        shoeData = self.searchShoe()
+        shoeSizes_array = []
+        #convert to numpy
+        print();
+        for i in range (len(shoeData['ProductActivity'])):
+            shoeSizes_array.append(float(shoeData['ProductActivity'][i]['shoeSize']))
+        print(shoeSizes_array)
+        #sort to remove duplicate values
+        shoeSizes_array.sort(reverse=False)
+        removeDuplicates(shoeSizes_array)
+        skuUuid_array = []
+        for i in range (len(shoeSizes_array)):
+            for j in range (len(shoeData['ProductActivity'])):
+                if(float((shoeData['ProductActivity'][j]['shoeSize'])) == shoeSizes_array[i]):
+                    skuUuid_array.append("skuUuid: " + shoeData['ProductActivity'][j]['skuUuid'])
+                    break;
+        print(len(skuUuid_array))
+        print(len(shoeSizes_array))
+        print(skuUuid_array)
+        print(shoeSizes_array)    
+        def getSizeData(self):
+            return shoeSizes_array
+        def getSkuUuidData(self):
+            return skuUuid_array
+    def getSizeData_array(self):
+        #searches for individual shoe data
+        output = self.searchShoe()
+        shoeData = self.searchShoe()
+        #initiates empty array to be returned later
+        shoeSizes_array = []
+        #convert to numpy
+        print();
+        #searches through all the available 250 datapoints
+        for i in range (len(shoeData['ProductActivity'])):
+            #appends every single size to shoeSizes_array
+            shoeSizes_array.append(float(shoeData['ProductActivity'][i]['shoeSize']))
+        #resorts array in ascending order to omit duplicate values
+        shoeSizes_array.sort(reverse=False)
+        removeDuplicates(shoeSizes_array)
+        return shoeSizes_array
+    #gets Size at specific skuUuid    
+    def getSizeAtSkuUuid(self, skuUuid):
+        allSizeData_array = self.getAllSizeData();
+        for i in range(len(self.getAllSizeData())):
+            if ("skuUuid: " + skuUuid == allSizeData_array[i][1]):
+                return allSizeData_array[i][0];
+
+    def getskuUuidData_array(self):
+        #same search process as earlier -- when refactoring make a function for this
+        shoeData = self.searchShoe()
+        shoeSizes_array = self.getSizeData_array()
+        #initiates empty array to be returned later
+        skuUuid_array = []
+        #Loops through all different shoe sizes available for particular shoe
+        for i in range (len(shoeSizes_array)):
+            #Loops through all 250 datapoints available for particular shoe
+            for j in range (len(shoeData['ProductActivity'])):
+                #finds matching skuUuid for each shoe size to create priceHistory log later on
+                if(float((shoeData['ProductActivity'][j]['shoeSize'])) == shoeSizes_array[i]):
+                    #appends to SkuUuid array and traverses to next item in shoeSize_array via break statement
+                    skuUuid_array.append("skuUuid: " + shoeData['ProductActivity'][j]['skuUuid'])
+                    break;
+        return skuUuid_array
+    def getskuUuidAtSize(self,size):
+        allSizeData_array = self.getAllSizeData();
+        size = float(size)
+        size = str(size)
+        print(size)
+        for i in range(len(self.getAllSizeData())):
+            if(size == allSizeData_array[i][0]):
+                return allSizeData_array[i][1]
+
+    #convert both arrays to Numpy arrays to merge into a 2D array, and returns 2D array
+    def getAllSizeData(self):
+        sizeData_array = np.array(self.getSizeData_array())
+        skuUuidData_array = np.array(self.getskuUuidData_array())
+        return np.vstack((sizeData_array, skuUuidData_array)).T
+    def searchPriceHistory(self):
+        url = f'https://stockx.com/api/products/{self.objectID}/activity?limit=1000&page=1&sort=createdAt&order=DESC&state=480&currency=USD&country=US'
+
+        headers = {
+            'accept': 'application/json',
+            'accept-encoding': 'utf-8',
+            'accept-language': 'en-US,en;q=0.9',
+            'app-platform': 'Iron',
+            'referer': 'https://stockx.com/en-US',
+            'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="100", "Google Chrome";v="100"',
+            'sec-ch-ua-mobile': '?1',
+            'sec-ch-ua-platform': '"Windows"',
+            'sec-fetch-dest': 'empty',
+            'sec-fetch-mode': 'cors',
+            'sec-fetch-site': 'same-origin',
+            'user-agent': 'Mozilla/5.0 (Linux; Android 6.0; Nexus 5 Build/MRA58N) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/100.0.4896.127 Mobile Safari/537.36',
+            'x-requested-with': 'XMLHttpRequest'
+        }
+
+        html = requests.get(url=url, headers=headers)
+        output = json.loads(html.text)
+        return output
+
+#helper functions
+
+#removes duplicate values in array -- array must be sorted first
+def removeDuplicates(arr):
+    for i in range(len(arr)-1,0,-1):
+        if arr[i] == arr[i-1]:
+            del arr[i]
+    return arr
+
+#print(Shoe.createObjectID('Epic React', 0), Shoe.createTitle('Epic React', 0), Shoe.createProductCategory('Epic React', 0), Shoe.createGender('Epic React', 0), Shoe.createSkUuid_array(9));
+shoe1 = Shoe(Shoe.createObjectID('Epic React', 0), Shoe.createTitle('Epic React', 0), Shoe.createProductCategory('Epic React', 0), Shoe.createGender('Epic React', 0));
+shoes_array.append(shoe1)
+print(shoe1.getGender())
+#print(shoes_array)
+print(shoe1.getObjectID())
+print(shoe1.searchShoe())
+print(shoe1.getSizeData_array())
+print(shoe1.getskuUuidData_array())
+print(shoe1.getAllSizeData())
+print(shoe1.getSizeAtSkuUuid("81c712df-6bad-41d4-a20a-9abc13a19f11"))
+print(shoe1.getskuUuidAtSize(14))
+
+    
+'''
 class ShoeSize(Shoe):
     def __init__(self, size, skuUID, priceHistory)
     def createSkUuid_array(self, index):
@@ -140,14 +268,7 @@ class ShoeSize(Shoe):
     
 #Shoes_array.append(Shoe(search('Epic React')))
 
-#print(Shoe.createObjectID('Epic React', 0), Shoe.createTitle('Epic React', 0), Shoe.createProductCategory('Epic React', 0), Shoe.createGender('Epic React', 0), Shoe.createSkUuid_array(9));
-shoe1 = Shoe(Shoe.createObjectID('Epic React', 0), Shoe.createTitle('Epic React', 0), Shoe.createProductCategory('Epic React', 0), Shoe.createGender('Epic React', 0));
-shoes_array.append(shoe1)
-print(shoe1.getGender())
-#print(shoes_array)
-#print(shoe1.getObjectID())
-print(shoe1.searchShoe())
-'''
+
 1. Create a for loop that appends all SkUuid's to the shoe (refer to google doc on what to append)
 2. Create another loop that stores the priceHistory array (Date, Price) in the skUuid object
 3. Create a for loop to append all the shoes to the shoe_array
