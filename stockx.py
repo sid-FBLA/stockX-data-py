@@ -10,14 +10,14 @@ shoes_array = [
 #this is a function in python
 def searchInput(query): 
     url = f'https://stockx.com/api/browse?_search={query}&page=1&resultsPerPage=10000&dataType=product&facetsToRetrieve[]=browseVerticals&propsToRetrieve[][]=brand&propsToRetrieve[][]=colorway&propsToRetrieve[][]=media.thumbUrl&propsToRetrieve[][]=title&propsToRetrieve[][]=productCategory&propsToRetrieve[][]=shortDescription&propsToRetrieve[][]=urlKey'
-
+    
     #headers to bypass security
     headers = {
         'accept': 'application/json',
         'accept-encoding': 'utf-8',
         'accept-language': 'en-US,en;q=0.9',
         'app-platform': 'Iron',
-        'referer': 'https://stockx.com/en-US',
+        'referer': 'https://stockx.com/',
         'sec-ch-ua': '" Not A;Brand";v="99", "Chromium";v="100", "Google Chrome";v="100"',
         'sec-ch-ua-mobile': '?1',
         'sec-ch-ua-platform': '"Windows"',
