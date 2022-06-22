@@ -7,8 +7,6 @@ import numpy as np
 shoes_array = [ 
 ]
 
-
-
 #this is a function in python
 def searchInput(query): 
     url = f'https://stockx.com/api/browse?_search={query}&page=1&resultsPerPage=10000&dataType=product&facetsToRetrieve[]=browseVerticals&propsToRetrieve[][]=brand&propsToRetrieve[][]=colorway&propsToRetrieve[][]=media.thumbUrl&propsToRetrieve[][]=title&propsToRetrieve[][]=productCategory&propsToRetrieve[][]=shortDescription&propsToRetrieve[][]=urlKey'
@@ -32,6 +30,7 @@ def searchInput(query):
 
     html = requests.get(url=url, headers=headers)
     output = json.loads(html.text)
+    print(output)
     return output
 
 
@@ -46,6 +45,7 @@ class Shoe():
     
     def createObjectID(query, index):
         output = searchInput(query);
+        print(output)
         #objectID refers to ID when searching for exact shoe
         return output['Products'][index]['objectID'] 
 
@@ -232,8 +232,8 @@ def removeDuplicates(arr):
             del arr[i]
     return arr
 
-#print(Shoe.createObjectID('Epic React', 0), Shoe.createTitle('Epic React', 0), Shoe.createProductCategory('Epic React', 0), Shoe.createGender('Epic React', 0), Shoe.createSkUuid_array(9));
-shoe1 = Shoe(Shoe.createObjectID('Epic React', 0), Shoe.createTitle('Epic React', 0), Shoe.createProductCategory('Epic React', 0), Shoe.createGender('Epic React', 0));
+#print(Shoe.createObjectID('f', 0), Shoe.createTitle('f', 0), Shoe.createProductCategory('f', 0), Shoe.createGender('f', 0), Shoe.createSkUuid_array(9));
+shoe1 = Shoe(Shoe.createObjectID('f', 0), Shoe.createTitle('f', 0), Shoe.createProductCategory('f', 0), Shoe.createGender('f', 0));
 shoes_array.append(shoe1)
 print(shoe1.getGender())
 #print(shoes_array)
@@ -279,7 +279,7 @@ class ShoeSize(Shoe):
 
 
     
-#Shoes_array.append(Shoe(search('Epic React')))
+#Shoes_array.append(Shoe(search('f')))
 
 
 1. Create a for loop that appends all SkUuid's to the shoe (refer to google doc on what to append)
