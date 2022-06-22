@@ -175,11 +175,14 @@ class Shoe():
                     skuUuid_array.append("skuUuid: " + shoeData['ProductActivity'][j]['skuUuid'])
                     break;
         return skuUuid_array
+    #input size and return skuUuid    
     def getskuUuidAtSize(self,size):
+        #gets the size data array and converts the size to a string
         allSizeData_array = self.getAllSizeData();
         size = float(size)
         size = str(size)
         print(size)
+        #compares with the size data array until corresponding skuUuid is found
         for i in range(len(self.getAllSizeData())):
             if(size == allSizeData_array[i][0]):
                 return allSizeData_array[i][1]
@@ -189,8 +192,12 @@ class Shoe():
         sizeData_array = np.array(self.getSizeData_array())
         skuUuidData_array = np.array(self.getskuUuidData_array())
         return np.vstack((sizeData_array, skuUuidData_array)).T
-    def searchPriceHistory(self):
-        url = f'https://stockx.com/api/products/{self.objectID}/activity?limit=1000&page=1&sort=createdAt&order=DESC&state=480&currency=USD&country=US'
+
+    #this is for tertiary level methods, we are traversing through the 3rd level array relative to our initial search    
+    def searchPriceHistory(self, size):
+        skuUuid = self.getskuUuidAtSize(size)
+        print(skuUuid)
+        url = f'https://stockx.com/api/products/{skuUuid}/activity?limit=1000&page=1&sort=createdAt&order=DESC&state=480&currency=USD&country=US'
 
         headers = {
             'accept': 'application/json',
@@ -211,6 +218,10 @@ class Shoe():
         html = requests.get(url=url, headers=headers)
         output = json.loads(html.text)
         return output
+
+    def getPriceHistory(self, size):
+        priceHistory_array = self.searchPriceHistory(size)
+        return priceHistory_array
 
 #helper functions
 
@@ -233,6 +244,8 @@ print(shoe1.getskuUuidData_array())
 print(shoe1.getAllSizeData())
 print(shoe1.getSizeAtSkuUuid("81c712df-6bad-41d4-a20a-9abc13a19f11"))
 print(shoe1.getskuUuidAtSize(14))
+print(shoe1.searchPriceHistory(14))
+print(shoe1.getPriceHistory(14))
 
     
 '''
