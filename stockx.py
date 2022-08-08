@@ -3,14 +3,17 @@ from matplotlib.pyplot import title
 import requests
 import json
 import numpy as np
+# from bs4 import BeautifulSoup as bs -- not sure why bs4 is not working
 
 shoes_array = [ 
 ]
 
+#try changing proxies to bypass 403 error
+
 #this is a function in python
 def searchInput(query): 
     url = f'https://stockx.com/api/browse?_search={query}&page=1&resultsPerPage=10000&dataType=product&facetsToRetrieve[]=browseVerticals&propsToRetrieve[][]=brand&propsToRetrieve[][]=colorway&propsToRetrieve[][]=media.thumbUrl&propsToRetrieve[][]=title&propsToRetrieve[][]=productCategory&propsToRetrieve[][]=shortDescription&propsToRetrieve[][]=urlKey'
-    
+    print(url)
     #headers to bypass security
     headers = {
         'accept': 'application/json',
@@ -29,6 +32,7 @@ def searchInput(query):
     }
 
     html = requests.get(url=url, headers=headers)
+    print(html)
     output = json.loads(html.text)
     print(output)
     return output
