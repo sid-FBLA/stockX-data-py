@@ -5,13 +5,13 @@ import json
 import numpy as np
 # from bs4 import BeautifulSoup as bs -- not sure why bs4 is not working
 
-shoes_array = [ 
+shoes_array = [
 ]
 
 #try changing proxies to bypass 403 error
 
 #this is a function in python
-def searchInput(query): 
+def searchInput(query):
     url = f'https://stockx.com/api/browse?_search={query}&page=1&resultsPerPage=10000&dataType=product&facetsToRetrieve[]=browseVerticals&propsToRetrieve[][]=brand&propsToRetrieve[][]=colorway&propsToRetrieve[][]=media.thumbUrl&propsToRetrieve[][]=title&propsToRetrieve[][]=productCategory&propsToRetrieve[][]=shortDescription&propsToRetrieve[][]=urlKey'
     print(url)
     #headers to bypass security
@@ -32,26 +32,23 @@ def searchInput(query):
     }
 
     html = requests.get(url=url, headers=headers)
-    print(html)
     output = json.loads(html.text)
-    print(output)
     return output
 
 
 class Shoe():
-    #self operates the same way as "this" it's not an actual 
+    #self operates the same way as "this" it's not an actual
     #each of these are methods which must be called on the respective Shoe class
     def __init__(self, objectID, title, productCategory, gender):
         self.objectID = objectID
         self.title = title
         self.productCategory = productCategory
         self.gender = gender
-    
+
     def createObjectID(query, index):
         output = searchInput(query);
-        print(output)
         #objectID refers to ID when searching for exact shoe
-        return output['Products'][index]['objectID'] 
+        return output['Products'][index]['objectID']
 
     def getObjectID(self):
         return self.objectID
@@ -59,7 +56,7 @@ class Shoe():
     def createTitle(query, index):
         output = searchInput(query);
         #objectID refers to ID when searching for exact shoe
-        return output['Products'][index]['title'] 
+        return output['Products'][index]['title']
 
     def getTitle(self):
         return self.title
@@ -67,7 +64,7 @@ class Shoe():
     def createProductCategory(query, index):
         output = searchInput(query);
         #objectID refers to ID when searching for exact shoe
-        return output['Products'][index]['productCategory'] 
+        return output['Products'][index]['productCategory']
 
     def getProductCategory(self):
         return self.productCategory
@@ -75,9 +72,9 @@ class Shoe():
     def createGender(query, index):
         output = searchInput(query);
         #objectID refers to ID when searching for exact shoe
-        name = output['Products'][index]['title'] 
+        name = output['Products'][index]['title']
         print(name)
-        if 'W' in name: 
+        if 'W' in name:
             return 'W'
         elif 'GS' in name:
             return 'Y'
@@ -86,13 +83,12 @@ class Shoe():
 
     def getGender(self):
         return self.gender
-        
+
     # Sizes: size, skuUID, priceHistory[[]]
     #[ [size, skuUID, priceHistory[[]]], [size, skuUID, priceHistory[[]]], [size, skuUID, priceHistory[[]]] ]
 
-    def searchShoe(self): 
+    def searchShoe(self):
         url = f'https://stockx.com/api/products/{self.objectID}/activity?limit=1000&page=1&sort=createdAt&order=DESC&state=480&currency=USD&country=US'
-
         headers = {
             'accept': 'application/json',
             'accept-encoding': 'utf-8',
@@ -135,7 +131,7 @@ class Shoe():
         print(len(skuUuid_array))
         print(len(shoeSizes_array))
         print(skuUuid_array)
-        print(shoeSizes_array)    
+        print(shoeSizes_array)
         def getSizeData(self):
             return shoeSizes_array
         def getSkuUuidData(self):
@@ -156,7 +152,7 @@ class Shoe():
         shoeSizes_array.sort(reverse=False)
         removeDuplicates(shoeSizes_array)
         return shoeSizes_array
-    #gets Size at specific skuUuid    
+    #gets Size at specific skuUuid
     def getSizeAtSkuUuid(self, skuUuid):
         allSizeData_array = self.getAllSizeData();
         for i in range(len(self.getAllSizeData())):
@@ -179,7 +175,7 @@ class Shoe():
                     skuUuid_array.append("skuUuid: " + shoeData['ProductActivity'][j]['skuUuid'])
                     break;
         return skuUuid_array
-    #input size and return skuUuid    
+    #input size and return skuUuid
     def getskuUuidAtSize(self,size):
         #gets the size data array and converts the size to a string
         allSizeData_array = self.getAllSizeData();
@@ -197,11 +193,12 @@ class Shoe():
         skuUuidData_array = np.array(self.getskuUuidData_array())
         return np.vstack((sizeData_array, skuUuidData_array)).T
 
-    #this is for tertiary level methods, we are traversing through the 3rd level array relative to our initial search    
+    #this is for tertiary level methods, we are traversing through the 3rd level array relative to our initial search
     def searchPriceHistory(self, size):
-        skuUuid = self.getskuUuidAtSize(size)
+        skuUuid = self.getskuUuidAtSize(size)[9:]
         print(skuUuid)
         url = f'https://stockx.com/api/products/{skuUuid}/activity?limit=1000&page=1&sort=createdAt&order=DESC&state=480&currency=USD&country=US'
+        print(url)
 
         headers = {
             'accept': 'application/json',
@@ -221,10 +218,14 @@ class Shoe():
 
         html = requests.get(url=url, headers=headers)
         output = json.loads(html.text)
+        print("Attempt to print output: ")
+        priceHistory
         return output
 
     def getPriceHistory(self, size):
         priceHistory_array = self.searchPriceHistory(size)
+        for i in range (len(priceHistory_array)):
+            print(priceHistory_array['ProductActivity'][i]['amount']);
         return priceHistory_array
 
 #helper functions
@@ -242,8 +243,8 @@ shoes_array.append(shoe1)
 print(shoe1.getGender())
 #print(shoes_array)
 print(shoe1.getObjectID())
-print(shoe1.searchShoe())
 print(shoe1.getSizeData_array())
+print(shoe1.searchShoe())
 print(shoe1.getskuUuidData_array())
 print(shoe1.getAllSizeData())
 print(shoe1.getSizeAtSkuUuid("81c712df-6bad-41d4-a20a-9abc13a19f11"))
@@ -251,7 +252,8 @@ print(shoe1.getskuUuidAtSize(14))
 print(shoe1.searchPriceHistory(14))
 print(shoe1.getPriceHistory(14))
 
-    
+
+
 '''
 class ShoeSize(Shoe):
     def __init__(self, size, skuUID, priceHistory)
@@ -264,7 +266,7 @@ class ShoeSize(Shoe):
                 self.size = size
                 self.skuUID = skuUID
                 self.priceHistory = priceHistory
-            
+
             def createSize(self,index):
                 shoeData = self.searchShoe()
                 return shoeData['productActivity'][index]['shoeSize']
@@ -278,11 +280,11 @@ class ShoeSize(Shoe):
         newSize = Size(Size.createSize(self, index), Size.createSkuUID(self, index), Size.createPriceHistory(9))
         size_array.append(newSize)
         return size_array
-    
 
 
 
-    
+
+
 #Shoes_array.append(Shoe(search('f')))
 
 
